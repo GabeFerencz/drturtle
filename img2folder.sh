@@ -2,6 +2,7 @@
 
 # Extract partitions from an img file and put them into a folder structure.
 # Requires kpartx and execution with root/su/sudo permissions.
+# TODO Can this be accomplished without root? Or with minimal root sudo'd out?
 
 IMAGE=$1
 
@@ -30,20 +31,19 @@ do
 	fi
 	PMAPPED=/dev/mapper/$PARTITION
 	echo -e '\t'Operating on $PMAPPED
-	PARTITION_LABEL=$(lsblk --noheadings -o label $PMAPPED)
+	PLABEL=$(lsblk --noheadings -o label $PMAPPED)
 	# If the drive has no label, use the mapper partition name
-	if [ ! $PARTITION_LABEL ] ; then
-		PARTITION_LABEL=$PARTITION	
+	if [ ! $PLABEL ] ; then
+		PLABEL=$PARTITION	
 	fi
 	# Create a temporary mount point to mount the partition
-	MOUNTPT=/mnt/$PARTITION_LABEL
-	mkdir $MOUNTPT
-	mount $PMAPPED $MOUNTPT
+	mkdir /mnt/$PLABEL
+	mount $PMAPPED /mnt/$PLABEL
 	# Copy the files and delete the temporary mount point
-	mkdir -p $IMGROOT/$PARTITION_LABEL
-	cp -r $MOUNTPT $IMGROOT
-	umount $MOUNTPT
-	rm -rf $MOUNTPT
+	mkdir -p $IMGROOT/$PLABEL
+	cp -r /mnt/$PLABEL $IMGROOT
+	umount /mnt/$PLABEL
+	rm -r /mnt/$PLABEL
 done
 kpartx -d $IMAGE
 
