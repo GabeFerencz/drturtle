@@ -6,6 +6,13 @@
 
 IMAGE=$1
 
+# Permission check
+ROOT_UID=0
+if [ "$EUID" -ne "$ROOT_UID" ] ; then
+	echo "Error: Script requires root permissions!" 1>&2
+	exit 126
+fi
+
 # Validate that we're getting a .img file
 if [ ! ${IMAGE: -4} = '.img' ] ; then
 	echo "Error: Need a .img file!" 1>&2
