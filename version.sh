@@ -9,7 +9,7 @@ while getopts ":c" opt; do
 			;;
 	esac
 done
-	
+
 echo_version() {
 	echo "$SET_COLOR$1$CLR_COLOR$2"
 }
@@ -20,3 +20,6 @@ echo_version "kernel release: " "$(uname -r)"
 echo_version "kernel version: " "$(uname -v)"
 echo_version "libc version:   " "${ldd_vers#ldd }"
 echo_version "distribution:   " "$(lsb_release -ds)"
+echo "----------------------------------------------"
+echo "$SET_COLOR When all else fails:$CLR_COLOR"
+echo "$(cat /etc/*release)"
